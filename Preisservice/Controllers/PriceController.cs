@@ -35,14 +35,6 @@ namespace Preisservice.Controllers
         [HttpGet]
         public object GetPriceByService(int userID, int productID)
         {
-            //var stopwatch = new Stopwatch();
-            //stopwatch.Start();
-            //UserPriceProxy proxy = _database.GetRawProductPrices(productID, userID);
-            //UserPriceModel model = new PriceCalculate().ProcessPrices(proxy);
-            //stopwatch.Stop();
-            //Debug.WriteLine("Processtime in Code: " + stopwatch.ElapsedMilliseconds + "ms");
-            //return model;
-
             return StopwatchExecute(
                 _database.GetRawProductPrices,
                 new PriceCalculate().ProcessPrices,

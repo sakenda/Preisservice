@@ -8,7 +8,6 @@ namespace Preisservice
 {
     public class Database : IDatabase
     {
-        //public static string DBCONNECTION;
         private string DBCONNECTION;
         private readonly IConfiguration _configuration;
 
