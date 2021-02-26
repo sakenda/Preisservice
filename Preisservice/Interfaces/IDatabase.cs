@@ -1,8 +1,10 @@
-﻿namespace Preisservice
+﻿using System.Threading.Tasks;
+
+namespace Preisservice
 {
     public interface IDatabase
     {
-        UserPriceModel GetProcessedProductPrices(int productID, int userID);
-        UserPriceProxy GetRawProductPrices(int productID, int userID);
+        Task<UserPriceModel> GetProcessedProductPricesAsync(int productID, int userID);
+        Task<UserPriceProxy> GetRawProductPricesAsync(int productID, int userID);
     }
 }

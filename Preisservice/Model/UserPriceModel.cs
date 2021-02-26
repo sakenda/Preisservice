@@ -9,6 +9,10 @@
         public decimal? UserDiscount { get; set; }
         public decimal PriceTotal { get; set; }
 
+        public UserPriceModel()
+        {
+        }
+
         public UserPriceModel(
             int userID,
             int productID,
@@ -25,14 +29,14 @@
             PriceTotal = priceTotal;
         }
 
-        public UserPriceModel(UserPriceProxy proxy)
-        {
-            UserID = proxy.UserID;
-            ProductID = proxy.ProductID;
-            PriceBase = proxy.PriceBase;
-            PriceShipping = proxy.PriceShipping;
-            UserDiscount = proxy.UserDiscount;
-            PriceTotal = proxy.PriceTotal;
-        }
+        //public UserPriceModel(UserPriceProxy proxy)
+        //{
+        //    UserID = proxy.UserID;
+        //    ProductID = proxy.ProductID;
+        //    PriceBase = proxy.PriceBase;
+        //    PriceShipping = proxy.PriceShipping;
+        //    UserDiscount = proxy.UserDiscount;
+        //    PriceTotal = proxy.PriceTotal;
+        //}
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using static Preisservice.DatabaseClientCast;
 
 namespace Preisservice
@@ -17,7 +18,7 @@ namespace Preisservice
             DBCONNECTION = _configuration.GetConnectionString("localhost");
         }
 
-        public UserPriceModel GetProcessedProductPrices(int productID, int userID)
+        public async Task<UserPriceModel> GetProcessedProductPricesAsync(int productID, int userID)
         {
             string sql;
             SqlCommand cmd;
@@ -35,13 +36,15 @@ namespace Preisservice
                 {
                     while (reader.Read())
                     {
-                        return new UserPriceModel(
-                            Convert.ToInt32(DBToValue<int>(reader["User_ID"])),
-                            Convert.ToInt32(DBToValue<int>(reader["Product_ID"])),
-                            Convert.ToDecimal(DBToValue<decimal>(reader["Price_Base"])),
-                            Convert.ToDecimal(DBToValue<decimal>(reader["Price_Shipping"])),
-                            Convert.ToDecimal(DBToValue<decimal>(reader["Price_Discount"])),
-                            Convert.ToDecimal(DBToValue<decimal>(reader["Price_Total"]))
+                        return await Task.Run(() =>
+                            new UserPriceModel(
+                                Convert.ToInt32(DBToValue<int>(reader["User_ID"])),
+                                Convert.ToInt32(DBToValue<int>(reader["Product_ID"])),
+                                Convert.ToDecimal(DBToValue<decimal>(reader["Price_Base"])),
+                                Convert.ToDecimal(DBToValue<decimal>(reader["Price_Shipping"])),
+                                Convert.ToDecimal(DBToValue<decimal>(reader["Price_Discount"])),
+                                Convert.ToDecimal(DBToValue<decimal>(reader["Price_Total"]))
+                            )
                         );
                     }
 
@@ -51,7 +54,7 @@ namespace Preisservice
             }
         }
 
-        public UserPriceProxy GetRawProductPrices(int productID, int userID)
+        public async Task<UserPriceProxy> GetRawProductPricesAsync(int productID, int userID)
         {
             string sql = null;
             SqlCommand cmd;
@@ -66,15 +69,15 @@ namespace Preisservice
                 conn.Open();
                 cmd = new SqlCommand(sql, conn);
 
-                (priceBase, priceShipping) = GetProductPriceAndShipping(cmd, productID, userID);
-                userDiscount = GetPriceDiscount(cmd);
-                userProductPrice = GetUserProductPrice(cmd);
+                (priceBase, priceShipping) = await Task.Run(() => GetProductPriceAndShippingAsync(cmd, productID, userID));
+                userDiscount = await Task.Run(() => GetPriceDiscountAsync(cmd));
+                userProductPrice = await Task.Run(() => GetUserProductPriceAsync(cmd));
             }
 
             return new UserPriceProxy(userID, productID, priceBase, priceShipping, userDiscount, userProductPrice);
         }
 
-        private (decimal, decimal?) GetProductPriceAndShipping(SqlCommand cmd, int productID, int userID)
+        private async Task<(decimal, decimal?)> GetProductPriceAndShippingAsync(SqlCommand cmd, int productID, int userID)
         {
             cmd.CommandText = "SELECT                                                               "
                             + "     pr.price_base       AS Price_Base,                              "
@@ -90,16 +93,17 @@ namespace Preisservice
             {
                 while (reader.Read())
                 {
-                    decimal priceBase = Convert.ToDecimal(reader["Price_Base"]);
-                    decimal? priceShipping = Convert.ToDecimal(DBToValue<decimal>(reader["Price_Shipping"]));
-
-                    return (priceBase, priceShipping);
+                    return await Task.Run(() =>
+                    (
+                        Convert.ToDecimal(reader["Price_Base"]),
+                        Convert.ToDecimal(DBToValue<decimal>(reader["Price_Shipping"]))
+                    ));
                 }
             }
             return (0, null);
         }
 
-        private decimal? GetPriceDiscount(SqlCommand cmd)
+        private async Task<decimal?> GetPriceDiscountAsync(SqlCommand cmd)
         {
             cmd.CommandText = "SELECT ud.userdiscount_value AS User_Discount                            "
                             + "FROM users u                                                             "
@@ -110,13 +114,13 @@ namespace Preisservice
             {
                 while (reader.Read())
                 {
-                    return Convert.ToDecimal(DBToValue<decimal>(reader["User_Discount"]));
+                    return await Task.Run(() => Convert.ToDecimal(DBToValue<decimal>(reader["User_Discount"])));
                 }
             }
             return null;
         }
 
-        private decimal? GetUserProductPrice(SqlCommand cmd)
+        private async Task<decimal?> GetUserProductPriceAsync(SqlCommand cmd)
         {
             cmd.CommandText = "SELECT userspecificprice_price AS User_ProductPrice          "
                             + "FROM userspecificprice                                       "
@@ -126,7 +130,7 @@ namespace Preisservice
             {
                 while (reader.Read())
                 {
-                    return Convert.ToDecimal(DBToValue<decimal>(reader["User_ProductPrice"]));
+                    return await Task.Run(() => Convert.ToDecimal(DBToValue<decimal>(reader["User_ProductPrice"])));
                 }
             }
             return null;

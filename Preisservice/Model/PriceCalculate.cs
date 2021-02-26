@@ -1,32 +1,44 @@
-﻿namespace Preisservice
+﻿using System.Threading.Tasks;
+
+namespace Preisservice
 {
     public class PriceCalculate
     {
         public UserPriceModel ProcessPrices(UserPriceProxy proxy)
         {
-            decimal discount = CalculateDiscount(proxy);
+            UserPriceModel result = new UserPriceModel();
 
-            proxy.PriceBase = SetBasePrice(proxy);
-            proxy.PriceTotal = proxy.PriceBase - (proxy.PriceBase * (decimal)discount);
+            result.ProductID = proxy.ProductID;
+            result.UserID = proxy.UserID;
+            result.PriceBase = proxy.PriceBase;
 
-            if (proxy.PriceShipping != null)
-                proxy.PriceTotal += (decimal)proxy.PriceShipping;
-
-            return new UserPriceModel(proxy);
-        }
-
-        private decimal SetBasePrice(UserPriceProxy proxy)
-        {
-            if (proxy.UserProductPrice != null)
-                return (decimal)proxy.UserProductPrice;
+            if (proxy.UserProductPrice.HasValue)
+            {
+                result.PriceBase = proxy.UserProductPrice.Value;
+                result.PriceTotal = proxy.UserProductPrice.Value;
+                result.UserDiscount = 0;
+            }
             else
-                return proxy.PriceBase;
+            {
+                result.UserDiscount = CalculateDiscount(proxy);
+                proxy.PriceTotal = proxy.PriceBase - (proxy.PriceBase * result.UserDiscount.Value);
+            }
+
+            if (proxy.PriceShipping.HasValue)
+            {
+                result.PriceShipping = proxy.PriceShipping;
+                result.PriceTotal += proxy.PriceShipping.Value;
+            }
+
+            return result;
         }
 
-        private decimal CalculateDiscount(UserPriceProxy proxy)
+        private decimal? CalculateDiscount(UserPriceProxy proxy)
         {
-            if (proxy.UserDiscount != null)
+            if (proxy.UserDiscount.HasValue)
+            {
                 return (decimal)proxy.UserDiscount / (decimal)100.00;
+            }
             return 0;
         }
     }

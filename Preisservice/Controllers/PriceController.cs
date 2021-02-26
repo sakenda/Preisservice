@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Preisservice.Controllers
 {
@@ -20,62 +21,39 @@ namespace Preisservice.Controllers
             return View();
         }
 
-        // https://localhost:44378/price/db?userid=3&productid=1015
-        // https://localhost:44378/price/db?userid=2&productid=2020
         [Route("DB")]
         [HttpGet]
-        public object GetPriceByDB(int userID, int productID)
+        public async Task<UserPriceModel> GetPriceByDB(int userID, int productID)
         {
-            return StopwatchExecute(_database.GetProcessedProductPrices, productID, userID);
-        }
-
-        // https://localhost:44378/price/code?userid=3&productid=1015
-        // https://localhost:44378/price/code?userid=2&productid=2020
-        [Route("Code")]
-        [HttpGet]
-        public object GetPriceByService(int userID, int productID)
-        {
-            return StopwatchExecute(
-                _database.GetRawProductPrices,
-                new PriceCalculate().ProcessPrices,
-                productID,
-                userID);
-        }
-
-        private T StopwatchExecute<T>(Func<int, int, T> func, int productID, int userID)
-        {
-            T result = default(T);
+            // https://localhost:44378/price/db?userid=3&productid=1015
+            // https://localhost:44378/price/db?userid=7&productid=2020
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            if (func != null)
-            {
-                result = func(productID, userID);
-            }
+            var result = await _database.GetProcessedProductPricesAsync(productID, userID);
 
             watch.Stop();
-            Debug.WriteLine($"Processtime in {func.Method}: {watch.ElapsedMilliseconds}ms");
+            Debug.WriteLine($"Processtime in DB: {watch.ElapsedMilliseconds}ms");
 
             return result;
         }
 
-        private T StopwatchExecute<T, K>(Func<int, int, K> func1, Func<K, T> func2, int productID, int userID)
+        [Route("Code")]
+        [HttpGet]
+        public async Task<UserPriceModel> GetPriceByService(int userID, int productID)
         {
-            K temp;
-            T result = default(T);
+            // https://localhost:44378/price/code?userid=3&productid=1015
+            // https://localhost:44378/price/code?userid=7&productid=2020
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            if (func1 != null && func2 != null)
-            {
-                temp = func1(productID, userID);
-                result = func2(temp);
-            }
+            var proxy = await _database.GetRawProductPricesAsync(productID, userID);
+            var result = new PriceCalculate().ProcessPrices(proxy);
 
             watch.Stop();
-            Debug.WriteLine($"Processtime in {func1.Method}: {watch.ElapsedMilliseconds}ms");
+            Debug.WriteLine($"Processtime in Code: {watch.ElapsedMilliseconds}ms");
 
             return result;
         }
