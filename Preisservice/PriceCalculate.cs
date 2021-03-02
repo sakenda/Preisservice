@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Preisservice
+namespace PreisService
 {
     public class PriceCalculate
     {

@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Preisservice.Controllers
+namespace PreisService.Controllers
 {
     [ApiController]
     [Route("[controller]")]

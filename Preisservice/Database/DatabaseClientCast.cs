@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Preisservice
+namespace PreisService
 {
     public static class DatabaseClientCast
     {

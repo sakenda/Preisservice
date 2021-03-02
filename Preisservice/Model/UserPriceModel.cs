@@ -1,4 +1,4 @@
-﻿namespace Preisservice
+﻿namespace PreisService
 {
     public class UserPriceModel
     {
@@ -28,15 +28,5 @@
             UserDiscount = userDiscount;
             PriceTotal = priceTotal;
         }
-
-        //public UserPriceModel(UserPriceProxy proxy)
-        //{
-        //    UserID = proxy.UserID;
-        //    ProductID = proxy.ProductID;
-        //    PriceBase = proxy.PriceBase;
-        //    PriceShipping = proxy.PriceShipping;
-        //    UserDiscount = proxy.UserDiscount;
-        //    PriceTotal = proxy.PriceTotal;
-        //}
     }
 }

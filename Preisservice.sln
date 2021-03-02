@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Preisservice", "Preisservice\Preisservice.csproj", "{6864D8B8-3D17-4F7B-AE2D-980F034092BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PreisService", "Preisservice\PreisService.csproj", "{6864D8B8-3D17-4F7B-AE2D-980F034092BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreisClient", "Client\PreisClient.csproj", "{173BE450-9A57-4EE1-B4AD-33BCF7791D04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6864D8B8-3D17-4F7B-AE2D-980F034092BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6864D8B8-3D17-4F7B-AE2D-980F034092BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6864D8B8-3D17-4F7B-AE2D-980F034092BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{173BE450-9A57-4EE1-B4AD-33BCF7791D04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{173BE450-9A57-4EE1-B4AD-33BCF7791D04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{173BE450-9A57-4EE1-B4AD-33BCF7791D04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{173BE450-9A57-4EE1-B4AD-33BCF7791D04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
