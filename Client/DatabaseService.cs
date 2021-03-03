@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace PreisClient
 {
@@ -10,9 +9,9 @@ namespace PreisClient
         private const string DBCONNECTION = "SERVER=DESKTOP-9QI02R2\\LOCALSQLSERVER;DATABASE=ECommerceDB;UID=client;PWD=client;";
 
         public static List<int> UserList = new DatabaseService().GetAllUsers();
-        public static List<int> ProductList = new DatabaseService().GetAllProductsAsync();
+        public static List<int> ProductList = new DatabaseService().GetAllProducts();
 
-        public List<int> GetAllProductsAsync()
+        private List<int> GetAllProducts()
         {
             string sql;
             SqlCommand cmd;
@@ -38,7 +37,7 @@ namespace PreisClient
             }
         }
 
-        public List<int> GetAllUsers()
+        private List<int> GetAllUsers()
         {
             string sql;
             SqlCommand cmd;

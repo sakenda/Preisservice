@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PreisClient
 {
@@ -10,30 +7,26 @@ namespace PreisClient
     {
         private static void Main(string[] args)
         {
-            Console.WriteLine(new string('=', 40) + " Übersicht User");
-            foreach (var item in DatabaseService.UserList)
-            {
-                Console.Write(item + ", ");
-            }
-            Console.WriteLine();
-            Console.WriteLine(new string('=', 40) + " Übersicht Produktpreise");
-            foreach (var item in DatabaseService.ProductList)
-            {
-                Console.Write($"{item,-10}");
-            }
-            Console.WriteLine();
-            Console.WriteLine(new string('=', 40) + " Test API Call");
             RequestModel model;
+            ApiCaller apiCaller = new ApiCaller();
+            List<RequestModel> apiModels = new List<RequestModel>();
+
+            Console.WriteLine(" API-Abfrage " + new string('=', 40));
+            Console.WriteLine();
 
             foreach (var user in DatabaseService.UserList)
             {
-                Console.WriteLine("Kundennummer: " + user);
+                Console.WriteLine(" - Kundennummer: " + user);
                 foreach (var product in DatabaseService.ProductList)
                 {
-                    model = new ApiCaller().GetAllEventData(user, product);
-                    Console.WriteLine("    Produktnummer: " + product + new string(' ', 15) + model.PriceTotal.ToString());
+                    model = apiCaller.CallUserProductPriceAsync(user, product);
+                    Console.WriteLine($"    Produktnummer: {product,-15}Preis: {model.PriceTotal}");
+                    apiModels.Add(model);
                 }
+                Console.WriteLine();
             }
+
+            Console.WriteLine(" Ende-Abfrage " + new string('=', 39));
 
             Console.ReadKey();
         }
